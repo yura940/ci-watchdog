@@ -49,3 +49,9 @@ jobs:
           mkdir -p scans/semgrep
           semgrep --config=auto --json > scans/semgrep/report.json || true
 
+      - name: Generate HTML report
+        run: |
+          python3 generate_report.py
+          mkdir -p report
+          mv report.html report/report.html
+
