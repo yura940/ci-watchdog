@@ -55,3 +55,9 @@ jobs:
           mkdir -p report
           mv report.html report/report.html
 
+      - name: Print HTML report in logs
+        run: |
+          echo "📄 ----- CI-Watchdog Security Report -----"
+          cat report/report.html
+          echo "📄 --------------------------------------"
+
