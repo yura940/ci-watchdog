@@ -1,4 +1,4 @@
-name: 🔐 CI-Watchdog Security Scan
+name: CI-Watchdog Security Scan
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
 
 jobs:
   security-scan:
-    name: Run Gitleaks, Trivy and Semgrep
     runs-on: ubuntu-latest
+    name: Run Security Tools
 
     steps:
       - name: Checkout repository
@@ -19,53 +19,33 @@ jobs:
 
       - name: Install Gitleaks
         run: |
-          echo "🔧 Installing Gitleaks binary (v8.18.1)..."
           curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64.tar.gz -o gitleaks.tar.gz
           tar -xzf gitleaks.tar.gz
           chmod +x gitleaks
           sudo mv gitleaks /usr/local/bin/gitleaks
-          gitleaks version
-          echo "✅ Gitleaks installed."
 
       - name: Run Gitleaks
         run: |
-          echo "🚨 Running Gitleaks scan..."
           mkdir -p scans/gitleaks
           gitleaks detect --verbose --redact --report-format json --report-path scans/gitleaks/report.json --exit-code 0
-          echo "✅ Gitleaks scan completed."
 
       - name: Install Trivy
         run: |
-          echo "🔧 Installing Trivy..."
           wget https://github.com/aquasecurity/trivy/releases/download/v0.60.0/trivy_0.60.0_Linux-64bit.deb
           sudo dpkg -i trivy_0.60.0_Linux-64bit.deb
-          trivy --version
-          echo "✅ Trivy installed."
 
-      - name: Run Trivy filesystem scan
+      - name: Run Trivy
         run: |
-          echo "🔎 Running Trivy filesystem scan..."
           mkdir -p scans/trivy
           trivy fs . --format json --output scans/trivy/report.json --exit-code 0 --severity HIGH,CRITICAL
-          echo "✅ Trivy scan completed."
 
       - name: Install Semgrep
         run: |
-          echo "🔧 Installing Semgrep..."
           python3 -m pip install --upgrade pip
           pip install semgrep
-          semgrep --version
-          echo "✅ Semgrep installed."
 
-      - name: Run Semgrep scan
+      - name: Run Semgrep
         run: |
-          echo "🧠 Running Semgrep SAST scan..."
           mkdir -p scans/semgrep
           semgrep --config=auto --json > scans/semgrep/report.json || true
-          echo "✅ Semgrep scan completed (results saved to scans/semgrep/report.json)"
-
-      - name: Generate custom SVG badge
-        run: |
-          python3 generate_badge.py
-          echo "✅ Badge generated at assets/badge.svg"
 
