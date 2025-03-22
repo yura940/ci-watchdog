@@ -64,3 +64,8 @@ jobs:
           semgrep --config=auto --json > scans/semgrep/report.json || true
           echo "✅ Semgrep scan completed (results saved to scans/semgrep/report.json)"
 
+      - name: Generate custom SVG badge
+        run: |
+          python3 generate_badge.py
+          echo "✅ Badge generated at assets/badge.svg"
+
