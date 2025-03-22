@@ -21,11 +21,13 @@ jobs:
         run: |
           echo "🔧 Installing Gitleaks with official script..."
           curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/main/install.sh | sh -s -- -b /usr/local/bin
+          ls -l /usr/local/bin/gitleaks
           echo "✅ Gitleaks installed!"
 
       - name: Run Gitleaks
         run: |
           echo "🚨 Running Gitleaks scan..."
+          export PATH=$PATH:/usr/local/bin
           gitleaks detect --verbose --redact --exit-code 0
           echo "✅ Gitleaks scan completed."
 
