@@ -10,7 +10,7 @@ on:
 
 jobs:
   security-scan:
-    name: Run Gitleaks and Trivy
+    name: Run Gitleaks, Trivy and Semgrep
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,8 @@ jobs:
       - name: Run Gitleaks
         run: |
           echo "🚨 Running Gitleaks scan..."
-          gitleaks detect --verbose --redact --exit-code 0
+          mkdir -p scans/gitleaks
+          gitleaks detect --verbose --redact --report-format json --report-path scans/gitleaks/report.json --exit-code 0
           echo "✅ Gitleaks scan completed."
 
       - name: Install Trivy
@@ -44,6 +45,22 @@ jobs:
       - name: Run Trivy filesystem scan
         run: |
           echo "🔎 Running Trivy filesystem scan..."
-          trivy fs . --exit-code 0 --severity HIGH,CRITICAL
+          mkdir -p scans/trivy
+          trivy fs . --format json --output scans/trivy/report.json --exit-code 0 --severity HIGH,CRITICAL
           echo "✅ Trivy scan completed."
+
+      - name: Install Semgrep
+        run: |
+          echo "🔧 Installing Semgrep..."
+          python3 -m pip install --upgrade pip
+          pip install semgrep
+          semgrep --version
+          echo "✅ Semgrep installed."
+
+      - name: Run Semgrep scan
+        run: |
+          echo "🧠 Running Semgrep SAST scan..."
+          mkdir -p scans/semgrep
+          semgrep --config=auto --json > scans/semgrep/report.json || true
+          echo "✅ Semgrep scan completed (results saved to scans/semgrep/report.json)"
 
