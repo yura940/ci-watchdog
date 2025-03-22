@@ -1,4 +1,5 @@
 # 🐶 CI-Watchdog
+![CI-Watchdog](https://github.com/yura940/ci-watchdog/actions/workflows/ci.yml/badge.svg)
 
 **CI-Watchdog** is an automated DevSecOps agent designed to monitor and enhance the security of CI/CD pipelines, with a primary focus on **GitHub Actions**.
 
