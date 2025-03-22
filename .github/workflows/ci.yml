@@ -19,10 +19,8 @@ jobs:
 
       - name: Install Gitleaks
         run: |
-          echo "🔧 Downloading Gitleaks binary..."
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64 --output gitleaks
-          chmod +x gitleaks
-          sudo mv gitleaks /usr/local/bin/gitleaks
+          echo "🔧 Installing Gitleaks with official script..."
+          curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/main/install.sh | sh -s -- -b /usr/local/bin
           echo "✅ Gitleaks installed!"
 
       - name: Run Gitleaks
@@ -30,4 +28,19 @@ jobs:
           echo "🚨 Running Gitleaks scan..."
           gitleaks detect --verbose --redact --exit-code 0
           echo "✅ Gitleaks scan completed."
+
+      - name: Install Trivy
+        run: |
+          echo "🔧 Installing Trivy..."
+          sudo apt-get update
+          sudo apt-get install wget -y
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.49.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
+          echo "✅ Trivy installed."
+
+      - name: Run Trivy filesystem scan
+        run: |
+          echo "🔎 Running Trivy filesystem scan..."
+          trivy fs . --exit-code 0 --severity HIGH,CRITICAL
+          echo "✅ Trivy scan completed."
 
