@@ -1,4 +1,4 @@
-name: 🕵️‍♂️ Gitleaks Secret Scan
+name: 🔐 CI-Watchdog Security Scan
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  gitleaks-scan:
-    name: Run Gitleaks
+  security-scan:
+    name: Run Gitleaks and Trivy
     runs-on: ubuntu-latest
 
     steps:
@@ -21,4 +21,13 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         with:
           args: "--verbose --redact"
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget -y
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.49.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
+
+      - name: Run Trivy filesystem scan
+        run: trivy fs . --exit-code 0 --severity HIGH,CRITICAL
 
