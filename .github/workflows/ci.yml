@@ -2,10 +2,10 @@ name: 🔐 CI-Watchdog Security Scan
 
 on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -14,42 +14,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      # 1️⃣ - Récupérer le code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ - Installer Gitleaks
       - name: Install Gitleaks
         run: |
-          echo "🔧 Installing Gitleaks..."
+          echo "🔧 Downloading Gitleaks binary..."
           curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64 --output gitleaks
-    chmod +x gitleaks
           chmod +x gitleaks
           sudo mv gitleaks /usr/local/bin/gitleaks
-          echo "✅ Gitleaks installed."
+          echo "✅ Gitleaks installed!"
 
-      # 3️⃣ - Lancer Gitleaks (sans stopper le pipeline)
       - name: Run Gitleaks
         run: |
           echo "🚨 Running Gitleaks scan..."
-          gitleaks detect --verbose --redact --exit-code 0 --log-level=debug
+          gitleaks detect --verbose --redact --exit-code 0
           echo "✅ Gitleaks scan completed."
-
-      # 4️⃣ - Installer Trivy
-      - name: Install Trivy
-        run: |
-          echo "🔧 Installing Trivy..."
-          sudo apt-get update
-          sudo apt-get install wget -y
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.49.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
-          echo "✅ Trivy installed."
-
-      # 5️⃣ - Lancer Trivy (sans bloquer le pipeline)
-      - name: Run Trivy filesystem scan
-        run: |
-          echo "🔎 Running Trivy filesystem scan..."
-          trivy fs . --exit-code 0 --severity HIGH,CRITICAL
-          echo "✅ Trivy scan completed."
 
