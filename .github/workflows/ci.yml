@@ -2,10 +2,10 @@ name: 🔐 CI-Watchdog Security Scan
 
 on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -19,7 +19,8 @@ jobs:
 
       - name: Install Gitleaks
         run: |
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_8.18.1_linux_x64.tar.gz -o gitleaks.tar.gz
+          tar -xvzf gitleaks.tar.gz
           chmod +x gitleaks
           sudo mv gitleaks /usr/local/bin/gitleaks
 
@@ -33,5 +34,5 @@ jobs:
           sudo dpkg -i trivy_0.49.1_Linux-64bit.deb
 
       - name: Run Trivy filesystem scan
-        run: trivy fs . --exit-code 0 --severity HIGH,CRITICAL
+        run: trivy fs . --exit-code
 
