@@ -1,4 +1,4 @@
-# 🐶 CI-Watchdog  
+# 🐶 CI-Watchdog   
 ![Security Status](./assets/badge.svg)
 
 **CI-Watchdog** is an automated DevSecOps agent designed to monitor and enhance the security of GitHub repositories through CI/CD pipelines, with a primary focus on **GitHub Actions**.
